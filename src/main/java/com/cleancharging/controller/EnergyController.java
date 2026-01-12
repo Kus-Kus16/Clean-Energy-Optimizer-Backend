@@ -32,6 +32,6 @@ public class EnergyController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Charging hours must be between 1 and 6");
         }
 
-        return new OptimalChargingWindow();
+        return energyService.getOptimalChargingWindow(chargingHours);
     }
 }

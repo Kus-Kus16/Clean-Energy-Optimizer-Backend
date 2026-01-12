@@ -1,4 +1,4 @@
-package com.cleancharging.model.generationmix_api;
+package com.cleancharging.model.generationmixapi;
 
 import java.util.List;
 

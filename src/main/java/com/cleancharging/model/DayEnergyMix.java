@@ -9,7 +9,4 @@ public record DayEnergyMix (
     Set<EnergySourcePercentage> energySources,
     double cleanEnergyPercentage
 ){
-    public DayEnergyMix() {
-        this(null, null, 0);
-    }
 }

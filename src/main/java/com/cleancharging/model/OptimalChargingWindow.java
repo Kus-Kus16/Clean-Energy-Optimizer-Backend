@@ -1,9 +1,10 @@
 package com.cleancharging.model;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
-public class OptimalChargingWindow {
-    private LocalDate startDate;
-    private LocalDate endDate;
-    private double cleanEnergyPercentage;
+public record OptimalChargingWindow (
+    LocalDateTime startDate,
+    LocalDateTime endDate,
+    double cleanEnergyPercentage
+){
 }
