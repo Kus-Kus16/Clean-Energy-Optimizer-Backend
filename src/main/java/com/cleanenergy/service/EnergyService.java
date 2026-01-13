@@ -1,12 +1,12 @@
-package com.cleancharging.service;
+package com.cleanenergy.service;
 
-import com.cleancharging.model.DayEnergyMix;
-import com.cleancharging.model.EnergySource;
-import com.cleancharging.model.EnergySourcePercentage;
-import com.cleancharging.model.OptimalChargingWindow;
-import com.cleancharging.model.generationmixapi.GenerationData;
-import com.cleancharging.model.generationmixapi.GenerationMixEntry;
-import com.cleancharging.model.generationmixapi.GenerationResponse;
+import com.cleanenergy.model.DayEnergyMix;
+import com.cleanenergy.model.EnergySource;
+import com.cleanenergy.model.EnergySourcePercentage;
+import com.cleanenergy.model.OptimalChargingWindow;
+import com.cleanenergy.model.generationmixapi.GenerationData;
+import com.cleanenergy.model.generationmixapi.GenerationMixEntry;
+import com.cleanenergy.model.generationmixapi.GenerationResponse;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -19,17 +19,17 @@ import java.util.stream.Collectors;
 
 @Service
 public class EnergyService {
-    private final GenerationMixClient generationMixClient;
+    private final EnergyClient energyClient;
 
-    public EnergyService(GenerationMixClient generationMixClient) {
-        this.generationMixClient = generationMixClient;
+    public EnergyService(EnergyClient energyClient) {
+        this.energyClient = energyClient;
     }
 
     public OptimalChargingWindow getOptimalChargingWindow(int nHours) {
         LocalDateTime from = LocalDateTime.now(ZoneOffset.UTC).truncatedTo(ChronoUnit.MINUTES);
         LocalDateTime to = from.plusDays(2); // 48 hrs
 
-        GenerationResponse response = generationMixClient.getGenerationMix(from, to);
+        GenerationResponse response = energyClient.getGenerationMix(from, to);
         List<GenerationData> dataList = response.data();
 
         int windowSize = nHours * 2;
@@ -82,7 +82,9 @@ public class EnergyService {
         LocalDateTime from = LocalDateTime.of(LocalDate.now(ZoneOffset.UTC), LocalTime.MIN);
         LocalDateTime to = from.plusDays(3);
 
-        GenerationResponse response = generationMixClient.getGenerationMix(from, to);
+        GenerationResponse response = energyClient.getGenerationMix(from, to);
+
+        // Grouping by days
         List<List<GenerationData>> days = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
             days.add(new LinkedList<>());
@@ -98,7 +100,7 @@ public class EnergyService {
 
         return days.stream()
                 .map(this::getDayEnergyMix)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private DayEnergyMix getDayEnergyMix(List<GenerationData> dayData) {
@@ -108,8 +110,9 @@ public class EnergyService {
 
         LocalDate date = dayData.getFirst().from().toLocalDate();
         int totalData = dayData.size();
-        Map<EnergySource, Double> energySum = new HashMap<>();
 
+        // Total sum per EnergySource
+        Map<EnergySource, Double> energySum = new HashMap<>();
         for (GenerationData generationData : dayData) {
             if (!generationData.from().toLocalDate().isEqual(date)) {
                 throw new IllegalArgumentException("dayData contains different days");
@@ -121,6 +124,7 @@ public class EnergyService {
             }
         }
 
+        // Mean of each EnergySource
         Set<EnergySourcePercentage> percentageSet = energySum.entrySet().stream()
                 .map(entry -> {
                     EnergySource energySource = entry.getKey();

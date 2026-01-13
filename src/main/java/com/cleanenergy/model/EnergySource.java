@@ -1,6 +1,4 @@
-package com.cleancharging.model;
-
-import java.util.Objects;
+package com.cleanenergy.model;
 
 public enum EnergySource {
     GAS(false),

@@ -1,4 +1,4 @@
-package com.cleancharging;
+package com.cleanenergy;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -1,4 +1,4 @@
-package com.cleancharging.model.generationmixapi;
+package com.cleanenergy.model.generationmixapi;
 
 public record GenerationMixEntry(
         String fuel,

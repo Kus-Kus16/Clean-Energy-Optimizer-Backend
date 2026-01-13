@@ -1,8 +1,8 @@
-package com.cleancharging.controller;
+package com.cleanenergy.controller;
 
-import com.cleancharging.model.DayEnergyMix;
-import com.cleancharging.model.OptimalChargingWindow;
-import com.cleancharging.service.EnergyService;
+import com.cleanenergy.model.DayEnergyMix;
+import com.cleanenergy.model.OptimalChargingWindow;
+import com.cleanenergy.service.EnergyService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,7 +28,7 @@ public class EnergyController {
 
     @GetMapping("/optimal-window")
     public OptimalChargingWindow getOptimalChargingWindow(@RequestParam int chargingHours) {
-        if (chargingHours < 0 || chargingHours > 6) {
+        if (chargingHours < 1 || chargingHours > 6) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Charging hours must be between 1 and 6");
         }
 

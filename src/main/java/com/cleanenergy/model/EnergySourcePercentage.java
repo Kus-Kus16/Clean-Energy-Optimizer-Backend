@@ -1,4 +1,4 @@
-package com.cleancharging.model;
+package com.cleanenergy.model;
 
 public record EnergySourcePercentage (
     EnergySource energySource,

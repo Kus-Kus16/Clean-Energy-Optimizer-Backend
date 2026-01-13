@@ -1,6 +1,6 @@
-package com.cleancharging.service;
+package com.cleanenergy.service;
 
-import com.cleancharging.model.generationmixapi.GenerationResponse;
+import com.cleanenergy.model.generationmixapi.GenerationResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
@@ -8,15 +8,22 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Service
-public class GenerationMixClient {
+public class GenerationMixClient implements EnergyClient {
     private final static String BASE_URL = "https://api.carbonintensity.org.uk/generation";
-    private final RestClient restClient = RestClient.create(BASE_URL);
     private final static DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm'Z'");
+    private final RestClient restClient;
+
+    public GenerationMixClient(RestClient.Builder restClientBuilder) {
+        this.restClient = restClientBuilder
+                .baseUrl(BASE_URL)
+                .build();
+    }
 
     /**
      * @param from the minimum starting date of first GenerationData
      * @param to the minimum ending date for the last GenerationData
      */
+    @Override
     public GenerationResponse getGenerationMix(LocalDateTime from, LocalDateTime to) {
         String fromDate = toValidFromDate(from).format(FORMATTER);
         String toDate = roundToIntervalTime(to).format(FORMATTER);
@@ -37,9 +44,6 @@ public class GenerationMixClient {
         return roundToIntervalTime(from).plusMinutes(1);
     }
 
-    /**
-     * Converts given time up to the nearest 30 minute interval time
-     */
     private LocalDateTime roundToIntervalTime(LocalDateTime time) {
         int minute = time.getMinute();
 
